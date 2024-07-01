@@ -1,0 +1,9 @@
+&flexcomm2_lpi2c2 {
+	status = "okay";
+	gt911_lcd_par_s035: gt911-lcd_par_s035@5d {
+		compatible = "goodix,gt911";
+		reg = <0x5d>;
+		irq-gpios = <&nxp_flexio_connector 0 GPIO_ACTIVE_HIGH>;
+		alt-addr = <0x14>;
+	};
+};
