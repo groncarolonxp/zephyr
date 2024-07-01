@@ -10,6 +10,11 @@
 	chosen {
 		zephyr,display = &st7796s;
 	};
+
+	lvgl_pointer {
+		compatible = "zephyr,lvgl-pointer-input";
+		input = <&gt911_lcd_par_s035>;
+	};
 };
 
 &nxp_flexio_lcd {
