@@ -52,6 +52,15 @@
 			status = "disabled";
 		};
 	};
+
+	nxp_flexio_connector: flexio-connector {
+		compatible = "gpio-nexus";
+		#gpio-cells = <2>;
+		gpio-map-mask = <0xffffffff 0xffffffc0>;
+		gpio-map-pass-thru = <0 0x3f>;
+		gpio-map =	<0  0 &gpio4 6 0>;	/* Pin 6, INT */
+	};
+
 };
 
 &flexcomm1_lpspi1 {
