@@ -1,0 +1,22 @@
+/*
+ * Copyright 2024, NXP
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/{
+	lvgl_pointer {
+		compatible = "zephyr,lvgl-pointer-input";
+		input = <&gt911_lcd_par_s035>;
+	};
+};
+
+&flexcomm2_lpi2c2 {
+	status = "okay";
+	gt911_lcd_par_s035: gt911-lcd_par_s035@5d {
+		compatible = "goodix,gt911";
+		reg = <0x5d>;
+		irq-gpios = <&gpio4 6 GPIO_ACTIVE_HIGH>;
+		alt-addr = <0x14>;
+	};
+};
