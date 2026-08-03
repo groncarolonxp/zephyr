@@ -79,8 +79,8 @@
 
 	pinmux_lpi2c3: pinmux_lpi2c3 {
 		group0 {
-			pinmux = <&iomuxc_gpio_ad_18_lpi2c3_scl>,
-				 <&iomuxc_gpio_ad_19_lpi2c3_sda>;
+			pinmux = <&iomuxc_gpio_emc_b2_19_lpi2c3_scl>,
+				 <&iomuxc_gpio_emc_b2_20_lpi2c3_sda>;
 			drive-strength = "high";
 			slew-rate = "fast";
 			bias-pull-up;
@@ -90,8 +90,8 @@
 
 	pinmux_lpi2c3_sleep: pinmux_lpi2c3_sleep {
 		group0 {
-			pinmux = <&iomuxc_gpio_ad_18_lpi2c3_scl>,
-				 <&iomuxc_gpio_ad_19_lpi2c3_sda>;
+			pinmux = <&iomuxc_gpio_emc_b2_19_lpi2c3_scl>,
+				 <&iomuxc_gpio_emc_b2_20_lpi2c3_sda>;
 			drive-strength = "high";
 			slew-rate = "fast";
 			bias-pull-up;

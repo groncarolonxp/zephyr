@@ -64,51 +64,51 @@
 		status = "okay";
 	};
 
-arduino_header: connector {
-    compatible = "arduino-header-r3";
-    #gpio-cells = <2>;
-    gpio-map-mask = <0xffffffff 0xffffffc0>;
-    gpio-map-pass-thru = <0 0x3f>;
-    gpio-map = <ARDUINO_HEADER_R3_D0 0 &gpio1 9 0>,
-           <ARDUINO_HEADER_R3_D1 0 &gpio1 8 0>,
-           <ARDUINO_HEADER_R3_D2 0 &gpio4 15 0>,
-           <ARDUINO_HEADER_R3_D3 0 &gpio4 6 0>,
-           <ARDUINO_HEADER_R3_D4 0 &gpio4 12 0>,
-           <ARDUINO_HEADER_R3_D5 0 &gpio4 13 0>,
-           <ARDUINO_HEADER_R3_D6 0 &gpio4 7 0>,
-           <ARDUINO_HEADER_R3_D7 0 &gpio4 8 0>,
-           <ARDUINO_HEADER_R3_D8 0 &gpio4 3 0>,
-           <ARDUINO_HEADER_R3_D9 0 &gpio4 9 0>,
-           <ARDUINO_HEADER_R3_D10 0 &gpio5 4 0>,    /* GPIO_SD_B1_00 - SPI CS */
-           <ARDUINO_HEADER_R3_D11 0 &gpio5 6 0>,    /* GPIO_SD_B1_02 - SPI MOSI */
-           <ARDUINO_HEADER_R3_D12 0 &gpio5 7 0>,    /* GPIO_SD_B1_03 - SPI MISO */
-           <ARDUINO_HEADER_R3_D13 0 &gpio5 5 0>,    /* GPIO_SD_B1_01 - SPI SCK */
-           <ARDUINO_HEADER_R3_D14 0 &gpio4 17 0>,
-           <ARDUINO_HEADER_R3_D15 0 &gpio4 16 0>,
-           <ARDUINO_HEADER_R3_A0 0 &gpio4 10 0>,
-           <ARDUINO_HEADER_R3_A1 0 &gpio4 11 0>,
-           <ARDUINO_HEADER_R3_A2 0 &gpio4 4 0>,
-           <ARDUINO_HEADER_R3_A3 0 &gpio4 5 0>,
-           <ARDUINO_HEADER_R3_A4 0 &gpio4 17 0>,
-           <ARDUINO_HEADER_R3_A5 0 &gpio4 16 0>;
+	arduino_header: connector {
+		compatible = "arduino-header-r3";
+		#gpio-cells = <2>;
+		gpio-map-mask = <0xffffffff 0xffffffc0>;
+		gpio-map-pass-thru = <0 0x3f>;
+		gpio-map = <ARDUINO_HEADER_R3_D0 0 &gpio1 9 0>,
+			   <ARDUINO_HEADER_R3_D1 0 &gpio1 8 0>,
+			   <ARDUINO_HEADER_R3_D2 0 &gpio4 15 0>,
+			   <ARDUINO_HEADER_R3_D3 0 &gpio4 6 0>,
+			   <ARDUINO_HEADER_R3_D4 0 &gpio4 12 0>,
+			   <ARDUINO_HEADER_R3_D5 0 &gpio4 13 0>,
+			   <ARDUINO_HEADER_R3_D6 0 &gpio4 7 0>,
+			   <ARDUINO_HEADER_R3_D7 0 &gpio4 8 0>,
+			   <ARDUINO_HEADER_R3_D8 0 &gpio4 3 0>,
+			   <ARDUINO_HEADER_R3_D9 0 &gpio4 9 0>,
+			   <ARDUINO_HEADER_R3_D10 0 &gpio5 4 0>,    /* GPIO_SD_B1_00 - SPI CS */
+			   <ARDUINO_HEADER_R3_D11 0 &gpio5 6 0>,    /* GPIO_SD_B1_02 - SPI MOSI */
+			   <ARDUINO_HEADER_R3_D12 0 &gpio5 7 0>,    /* GPIO_SD_B1_03 - SPI MISO */
+			   <ARDUINO_HEADER_R3_D13 0 &gpio5 5 0>,    /* GPIO_SD_B1_01 - SPI SCK */
+			   <ARDUINO_HEADER_R3_D14 0 &gpio4 17 0>,
+			   <ARDUINO_HEADER_R3_D15 0 &gpio4 16 0>,
+			   <ARDUINO_HEADER_R3_A0 0 &gpio4 10 0>,
+			   <ARDUINO_HEADER_R3_A1 0 &gpio4 11 0>,
+			   <ARDUINO_HEADER_R3_A2 0 &gpio4 4 0>,
+			   <ARDUINO_HEADER_R3_A3 0 &gpio4 5 0>,
+			   <ARDUINO_HEADER_R3_A4 0 &gpio4 17 0>,
+			   <ARDUINO_HEADER_R3_A5 0 &gpio4 16 0>;
+	};
 };
+
+/* Node reference overrides must be at the top level, outside the root / node */
 
 &cpu0 {
 	clock-frequency = <DT_FREQ_M(240)>;
 };
 
-
-
-};
-
-arduino_spi: &lpspi3{
+arduino_spi: &lpspi3 {
 	status = "okay";
 };
- 
+
 /* Map lpi2c2 as arduino_i2c - adjust based on your board's available I2C */
 arduino_i2c: &lpi2c2 {
 	status = "okay";
 };
+
 &lpuart1 {
 	status = "okay";
 	current-speed = <115200>;
@@ -142,8 +142,6 @@ arduino_i2c: &lpi2c2 {
 	status = "okay";
 };
 
- 
-
 &edma3 {
 	status = "okay";
 };
@@ -176,7 +174,6 @@ zephyr_udc1: &usb2 {
 	tx-cal-45-dm-ohms = <6>;
 };
 
- 
 temp_sensor: &tmpsns {
 	status = "okay";
 };
