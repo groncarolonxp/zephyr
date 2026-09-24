@@ -1,0 +1,14 @@
+# Copyright 2023 Nordic Semiconductor ASA
+# Copyright 2023-2025 NXP
+# Copyright 2025 Ezurio LLC
+#
+# SPDX-License-Identifier: Apache-2.0
+
+source "share/sysbuild/Kconfig"
+
+config REMOTE_BOARD
+	string "Remote board"
+	default "mimxrt1180_evk/mimxrt1189/cm7" if $(BOARD) = "mimxrt1180_evk"
+	default "frdm_mcxn947/mcxn947/cpu1" if $(BOARD) = "frdm_mcxn947"
+	default "mcx_n9xx_evk/mcxn947/cpu1" if $(BOARD) = "mcx_n9xx_evk"
+

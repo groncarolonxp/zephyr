@@ -1,0 +1,22 @@
+/*
+ * Copyright 2024-2026 NXP
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/ {
+	/*
+	 * Virtual Ethernet over inter-processor shared memory + MBOX doorbell.
+	 * This core (cpu1) is the "remote". Both cores see SRAM at the same
+	 * address on MCXN947, so reg matches the host's base.
+	 */
+	vnet0: ethernet@20060000 {
+		compatible = "zephyr,ipc-ethernet";
+		reg = <0x20060000 0x6100>;
+		mboxes = <&mbox 0>, <&mbox 1>;
+		mbox-names = "tx", "rx";
+		role = "remote";
+		local-mac-address = [02 00 5e 00 53 01];
+		status = "okay";
+	};
+};

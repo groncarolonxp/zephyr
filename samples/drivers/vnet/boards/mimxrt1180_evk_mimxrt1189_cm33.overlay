@@ -1,0 +1,31 @@
+/*
+ * Copyright 2025-2026 NXP
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/ {
+	/*
+	 * Virtual Ethernet over inter-processor shared memory + MBOX doorbell.
+	 * This core (CM33) is the "host". The shared block lives in the top
+	 * 1 MB of hyperram0; from the CM33 that window is at 0x14700000.
+	 */
+	vnet0: ethernet@14700000 {
+		compatible = "zephyr,ipc-ethernet";
+		reg = <0x14700000 0x6100>;
+		mboxes = <&mbox1_a 1>, <&mbox1_a 0>;
+		mbox-names = "tx", "rx";
+		role = "host";
+		local-mac-address = [02 00 5e 00 53 02];
+		status = "okay";
+	};
+};
+
+/*
+ * Shrink hyperram0 (the CM33 SRAM) from 8 MB to 7 MB so the top 1 MB window
+ * at 0x14700000 is left unused by Zephyr and can hold the vnet shared block.
+ * The CM7 sees the same physical window at 0x04700000.
+ */
+&hyperram0 {
+	reg = <0x14000000 DT_SIZE_M(7)>;
+};

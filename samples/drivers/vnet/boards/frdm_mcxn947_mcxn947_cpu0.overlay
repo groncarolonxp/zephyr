@@ -1,0 +1,24 @@
+/*
+ * Copyright 2024-2026 NXP
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/ {
+	/*
+	 * Virtual Ethernet over inter-processor shared memory + MBOX doorbell.
+	 * This core (cpu0) is the "host": it initialises and publishes the
+	 * shared block. The block lives in sramh (0x20060000, 32 KB) which is
+	 * not allocated to either core; both cores see SRAM at the same
+	 * address on MCXN947, so host and remote use the same reg base.
+	 */
+	vnet0: ethernet@20060000 {
+		compatible = "zephyr,ipc-ethernet";
+		reg = <0x20060000 0x6100>;
+		mboxes = <&mbox 1>, <&mbox 0>;
+		mbox-names = "tx", "rx";
+		role = "host";
+		local-mac-address = [02 00 5e 00 53 02];
+		status = "okay";
+	};
+};
