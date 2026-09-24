@@ -1,0 +1,23 @@
+# Copyright 2026 NXP
+#
+# SPDX-License-Identifier: Apache-2.0
+
+source "share/sysbuild/Kconfig"
+
+config REMOTE_BOARD
+	string "Remote board"
+	default "frdm_mcxn947/mcxn947/cpu1" if $(BOARD) = "frdm_mcxn947"
+	default "mcx_n9xx_evk/mcxn947/cpu1" if $(BOARD) = "mcx_n9xx_evk"
+	help
+	  The board target of the remote (cpu1) image. cpu0 runs this bridge
+	  trampoline; the remote core runs the stock application selected by
+	  REMOTE_APP_SOURCE_DIR below.
+
+config REMOTE_APP_SOURCE_DIR
+	string "Remote application source directory"
+	default "${ZEPHYR_BASE}/samples/net/sockets/echo_server"
+	help
+	  Absolute path to the stock Zephyr application built for the remote
+	  (cpu1) core. Defaults to the unmodified sockets/echo_server sample,
+	  which answers on both UDP and TCP port 4242 and ships an
+	  ipc-ethernet (vnet0) board overlay for cpu1.
