@@ -1,0 +1,56 @@
+# IPC (shared-memory + MBOX doorbell) Ethernet driver configuration options
+
+# Copyright 2026 NXP
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig ETH_IPC
+	bool "Inter-processor shared-memory Ethernet driver"
+	select MBOX
+	# Only the PBUF library is actually used by this driver - there are no
+	# ipc_service_* or icmsg_* calls in eth_ipc.c. IPC_SERVICE_ICMSG is
+	# still required because "config PBUF" is declared inside
+	# subsys/ipc/ipc_service/lib/Kconfig.icmsg, which is only sourced
+	# under "if IPC_SERVICE_ICMSG". Selecting PBUF on its own would
+	# reference an out-of-scope symbol, CONFIG_PBUF would stay unset, and
+	# pbuf.c (gated on it in lib/CMakeLists.txt) would not be built.
+	# Do not "clean up" these selects without moving config PBUF first.
+	select IPC_SERVICE
+	select IPC_SERVICE_ICMSG
+	select PBUF
+	depends on DT_HAS_ZEPHYR_IPC_ETHERNET_ENABLED
+	default y
+	help
+	  Enable the virtual Ethernet driver that carries frames between two
+	  cores through a shared-memory FIFO and signals the peer with an MBOX
+	  doorbell. The on-SoC dual-core equivalent of the ivshmem Ethernet
+	  driver. The shared-memory FIFO is the Zephyr IPC-service packed
+	  buffer (PBUF), so index management and cache maintenance are handled
+	  by that common library rather than a bespoke ring. Instances are
+	  created from "zephyr,ipc-ethernet" devicetree nodes.
+
+if ETH_IPC
+
+config ETH_IPC_DCACHE_ALIGN
+	int "Cache line alignment for the shared packed buffers"
+	default DCACHE_LINE_SIZE if DCACHE_LINE_SIZE > 0
+	default 32
+	help
+	  Data cache line size (in bytes) of the target cores. The PBUF layout
+	  uses this to place its read/write indices on separate cache lines and
+	  to size its cache maintenance, which avoids false sharing when the two
+	  cores share non-coherent memory. Set this to the data cache line size
+	  of the target cores (must be a power of two, >= sizeof(uint32_t)).
+
+	  Note both cores must agree on this value, and it must be at least the
+	  largest cache line size of the two. Setting it too small silently
+	  removes the false-sharing protection; the driver BUILD_ASSERTs what
+	  it can, but it cannot see the peer's configuration.
+
+config ETH_IPC_CONNECT_STACK_SIZE
+	int "Background connect/handshake thread stack size"
+	default 1024
+	help
+	  Stack for the per-instance thread that performs the peer handshake
+	  and raises the virtual carrier once the peer is present.
+
+endif # ETH_IPC
