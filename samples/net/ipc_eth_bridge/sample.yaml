@@ -1,0 +1,15 @@
+sample:
+  name: IPC Ethernet host-side bridge (trampoline)
+  description: >
+    Host-core trampoline that L2-bridges the IPC virtual Ethernet (vnet0,
+    provided by the zephyr,ipc-ethernet driver) with the on-board real
+    Ethernet, so a stock networking app on the remote core can reach an
+    off-chip host. Pairs with a "remote" ipc-ethernet instance on the other
+    core (e.g. a stock samples/net/sockets/echo built for that core).
+tests:
+  sample.net.ipc_eth_bridge:
+    build_only: true
+    platform_allow:
+      - frdm_mcxn947/mcxn947/cpu0
+    tags: net ethernet ipc
+    depends_on: mbox

@@ -1,0 +1,22 @@
+/*
+ * Copyright 2026 NXP
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Host-side (cpu0) instance of the IPC virtual Ethernet. This core is the
+ * "host": it initialises and publishes the shared block. It runs the bridge
+ * trampoline (see src/main.c) rather than a socket app, forwarding vnet0 <->
+ * the real on-board Ethernet so a stock app on cpu1 can reach an off-chip PC.
+ */
+
+/ {
+	vnet0: ethernet@20060000 {
+		compatible = "zephyr,ipc-ethernet";
+		reg = <0x20060000 0x6100>;
+		mboxes = <&mbox 1>, <&mbox 0>;
+		mbox-names = "tx", "rx";
+		role = "host";
+		local-mac-address = [02 00 5e 00 53 02];
+		status = "okay";
+	};
+};
