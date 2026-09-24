@@ -1,0 +1,68 @@
+# Copyright 2026 NXP
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  Virtual Ethernet device over inter-processor shared memory plus an MBOX
+  doorbell.
+
+  This is the on-SoC dual-core equivalent of the ivshmem Ethernet driver:
+  two cores that share a block of memory exchange full Ethernet frames
+  through a single-producer / single-consumer packed buffer (struct pbuf,
+  the Zephyr IPC-service FIFO) carved out of that block, and signal each
+  other with an MBOX (e.g. MU mailbox) doorbell. The device registers as a
+  standard Ethernet interface so the whole IP / socket stack runs on top
+  of it unchanged.
+
+  The block is split in half into two unidirectional pbuf regions, one per
+  direction. pbuf owns all index management and cache maintenance, so this
+  works on cores that share non-coherent memory.
+
+  One side must be the "host" (it initialises and publishes the shared
+  block) and the other the "remote" (it waits for the host to publish).
+  The two sides own opposite regions for TX / RX.
+
+  Example (host core):
+
+    vnet0: ethernet@20060000 {
+        compatible = "zephyr,ipc-ethernet";
+        reg = <0x20060000 0x6100>;
+        mboxes = <&mbox 1>, <&mbox 0>;
+        mbox-names = "tx", "rx";
+        role = "host";
+        local-mac-address = [02 00 5e 00 53 02];
+    };
+
+compatible: "zephyr,ipc-ethernet"
+
+include: ethernet-controller.yaml
+
+properties:
+  reg:
+    required: true
+    description: |
+      Base address and size of the shared-memory block as seen from THIS
+      core's address map. The two cores may map the same physical block at
+      different addresses, so each core's devicetree carries its own view.
+
+      The block is split in half, one pbuf region per direction, so the
+      size must cover twice (pbuf overhead + one maximum-size frame). The
+      driver BUILD_ASSERTs this.
+
+  mboxes:
+    required: true
+    description: TX (to peer) and RX (from peer) doorbell channels.
+
+  mbox-names:
+    required: true
+    description: Must list "tx" and "rx".
+
+  role:
+    type: string
+    required: true
+    enum:
+      - "host"
+      - "remote"
+    description: |
+      Which side of the shared block this instance is. The host initialises
+      and publishes the block; the remote waits for it. Exactly one of the
+      two cores must be "host".
