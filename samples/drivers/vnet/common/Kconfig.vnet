@@ -1,0 +1,46 @@
+# Copyright 2026 NXP
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Configuration for the virtual network device sample.
+#
+# The virtual Ethernet link itself is now provided by the in-tree
+# "zephyr,ipc-ethernet" driver (CONFIG_ETH_IPC), instantiated from the
+# vnet0 devicetree node in each board overlay. The options below only
+# configure the sample's UDP demo application on top of that link.
+
+config VNET
+	bool "Virtual network device UDP demo"
+	default y
+	select NETWORKING
+	select NET_L2_ETHERNET
+	help
+	  Build the UDP demo application that runs the network stack over the
+	  vnet0 interface provided by the zephyr,ipc-ethernet driver. Frames
+	  cross between the two cores through a shared-memory ring signalled by
+	  an MBOX doorbell.
+
+if VNET
+
+config VNET_DEMO_PEER_ADDR
+	string "Peer IPv4 address(es) the demo sends UDP datagrams to"
+	default "192.0.2.1,192.0.2.10"
+	help
+	  The demo TX loop sends to this address on every cycle. This may be a
+	  comma-separated list (up to 4 addresses) to send to several peers at
+	  once. By default the host targets the remote core (192.0.2.1) and a
+	  PC (192.0.2.10), and the remote targets the host core (192.0.2.2) and
+	  the PC (192.0.2.10). The PC is reachable through the host's
+	  vnet0<->Ethernet bridge (see VNET_BRIDGE).
+
+config VNET_BRIDGE
+	bool "Bridge vnet0 with the real Ethernet interface (host only)"
+	select NET_ETHERNET_BRIDGE
+	help
+	  On the host core, transparently L2-bridge the virtual interface
+	  (vnet0) with the on-board Ethernet interface. This lets the remote
+	  core reach an off-chip host (e.g. a PC on the same subnet) via the
+	  shared-memory link and the host's Ethernet port. When enabled, the
+	  host acts as a bridge rather than running the UDP demo itself.
+
+endif # VNET

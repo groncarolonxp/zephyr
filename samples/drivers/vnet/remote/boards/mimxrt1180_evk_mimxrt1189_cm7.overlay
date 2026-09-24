@@ -1,0 +1,32 @@
+/*
+ * Copyright 2025-2026 NXP
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/ {
+	/*
+	 * Virtual Ethernet over inter-processor shared memory + MBOX doorbell.
+	 * This core (CM7) is the "remote". The CM33 places the shared block in
+	 * the top 1 MB of hyperram0; from the CM7 the same physical HyperRAM is
+	 * seen at 0x04000000, so the shared block is at 0x04700000.
+	 */
+	vnet0: ethernet@4700000 {
+		compatible = "zephyr,ipc-ethernet";
+		reg = <0x04700000 0x6100>;
+		mboxes = <&mbox1_b 0>, <&mbox1_b 1>;
+		mbox-names = "tx", "rx";
+		role = "remote";
+		local-mac-address = [02 00 5e 00 53 01];
+		status = "okay";
+	};
+};
+
+/*
+ * hyperram0 is disabled in the CM7 device tree by default; enable it here and
+ * size it to cover the shared window so the driver can access the block.
+ */
+&hyperram0 {
+	reg = <0x04000000 DT_SIZE_M(8)>;
+	status = "okay";
+};
