@@ -1,0 +1,26 @@
+/*
+ * Copyright 2026 NXP
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Instantiate the IPC (shared-memory + MBOX doorbell) virtual Ethernet
+ * device on cpu1 (the "remote" core). With this overlay the STOCK
+ * echo_server sample runs unmodified over vnet0: the driver brings its own
+ * carrier up on the peer handshake and NET_CONFIG assigns the IPv4 address.
+ *
+ * The shared block lives at 0x20060000 (sramh, 32 KB) which the board dts
+ * does not assign to either core, so no carve-out is needed. cpu0 (host)
+ * must run a matching "host" instance (e.g. the ipc_eth_bridge app).
+ */
+
+/ {
+	vnet0: ethernet@20060000 {
+		compatible = "zephyr,ipc-ethernet";
+		reg = <0x20060000 0x6100>;
+		mboxes = <&mbox 0>, <&mbox 1>;
+		mbox-names = "tx", "rx";
+		role = "remote";
+		local-mac-address = [02 00 5e 00 53 01];
+		status = "okay";
+	};
+};
